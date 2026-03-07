@@ -1,6 +1,18 @@
 # Claude
 CLAUDE.md
+.claude/
+
+# Environment
+.env
+.env.local
 
 # Dependencies
 node_modules/
 **/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Docker
+.docker/
