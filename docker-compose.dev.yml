@@ -5,7 +5,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules # Prevents host node_modules overwriting container's
-    command: npm run dev
+    command: sh -c "npx prisma migrate deploy && npx prisma generate && npm run dev"
 
   frontend:
     build:
