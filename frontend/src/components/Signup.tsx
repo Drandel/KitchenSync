@@ -59,9 +59,21 @@ export default function SignupForm({
   return (
     <>
       {/* Logo */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2, color: DARK_GREEN }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mb: 2,
+          color: DARK_GREEN,
+        }}
+      >
         <RestaurantMenuIcon sx={{ fontSize: 28 }} />
-        <Typography variant="h6" fontWeight={700} sx={{ color: DARK_GREEN, letterSpacing: 0.5 }}>
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          sx={{ color: DARK_GREEN, letterSpacing: 0.5 }}
+        >
           KitchenSync
         </Typography>
       </Box>
@@ -74,176 +86,196 @@ export default function SignupForm({
       >
         Create Your KitchenSync Account
       </Typography>
-      <Typography variant="body2" sx={{ color: "#6b6b6b", mb: 3, textAlign: "center" }}>
+      <Typography
+        variant="body2"
+        sx={{ color: "#6b6b6b", mb: 3, textAlign: "center" }}
+      >
         Sign up to start saving &amp; sharing your favorite recipes.
       </Typography>
 
-      {/* Cork card / form */}
+      {/* Unified card: cork top + cream bottom */}
       <Box
-        component="form"
-        onSubmit={onSubmit}
         sx={{
           width: "100%",
           maxWidth: 480,
-          backgroundImage: `url(${corkTexture})`,
-          backgroundSize: "auto",
           borderRadius: 3,
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
-          gap: 1.5,
+          overflow: "hidden",
         }}
       >
-        <TextField
-          fullWidth
-          placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => onFullNameChange(e.target.value)}
-          required
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#8b7355" }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={inputSx}
-        />
-
-        <TextField
-          fullWidth
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => onEmailChange(e.target.value)}
-          required
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#8b7355" }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={inputSx}
-        />
-
-        <TextField
-          fullWidth
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
-          required
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon sx={{ color: "#8b7355" }} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={onTogglePassword}
-                    edge="end"
-                    size="small"
-                    sx={{ color: "#8b7355" }}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={inputSx}
-        />
-
-        {error && (
-          <Typography variant="caption" sx={{ color: "#c0392b" }}>
-            {error}
-          </Typography>
-        )}
-
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          disabled={isLoading}
+        {/* Cork section: form fields + submit + toggle link */}
+        <Box
+          component="form"
+          onSubmit={onSubmit}
           sx={{
-            backgroundColor: DARK_GREEN,
-            color: "#fff",
-            fontWeight: 700,
-            fontSize: "1rem",
-            textTransform: "none",
-            py: 1.25,
-            borderRadius: 1.5,
-            "&:hover": { backgroundColor: "#1e3d1b" },
+            backgroundImage: `url(${corkTexture})`,
+            backgroundSize: "auto",
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.5,
           }}
         >
-          Create Account
-        </Button>
+          <TextField
+            fullWidth
+            placeholder="Full Name"
+            value={fullName}
+            onChange={(e) => onFullNameChange(e.target.value)}
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: "#8b7355" }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={inputSx}
+          />
 
-        <Typography
-          variant="body2"
-          sx={{ textAlign: "center", color: "#FAF9F6", fontWeight: 600 }}
-        >
-          Already have an account?{" "}
-          <Link
-            component="button"
-            type="button"
-            onClick={onToggleMode}
-            sx={{ color: "#FAF9F6", fontWeight: 700 }}
+          <TextField
+            fullWidth
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => onEmailChange(e.target.value)}
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon sx={{ color: "#8b7355" }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={inputSx}
+          />
+
+          <TextField
+            fullWidth
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => onPasswordChange(e.target.value)}
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon sx={{ color: "#8b7355" }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={onTogglePassword}
+                      edge="end"
+                      size="small"
+                      sx={{ color: "#8b7355" }}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            sx={inputSx}
+          />
+
+          {error && (
+            <Typography variant="caption" sx={{ color: "#c0392b" }}>
+              {error}
+            </Typography>
+          )}
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={isLoading}
+            sx={{
+              backgroundColor: DARK_GREEN,
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: "1rem",
+              textTransform: "none",
+              py: 1.25,
+              borderRadius: 1.5,
+              "&:hover": { backgroundColor: "#1e3d1b" },
+            }}
           >
-            Log in
-          </Link>
-        </Typography>
-      </Box>
+            Create Account
+          </Button>
 
-      {/* OAuth + legal */}
-      <Box sx={{ width: "100%", maxWidth: 480, mt: 1 }}>
-        <Divider sx={{ my: 2 }}>
-          <Typography variant="caption" sx={{ color: "#888" }}>
-            Or sign up with
+        </Box>
+
+        {/* Cream/linen section: OAuth + legal */}
+        <Box sx={{ backgroundColor: "#faf7f0", p: 3 }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "center", color: DARK_GREEN, fontWeight: 600, mb: 2 }}
+          >
+            Already have an account?{" "}
+            <Link
+              component="button"
+              type="button"
+              onClick={onToggleMode}
+              sx={{ color: DARK_GREEN, fontWeight: 700 }}
+            >
+              Log in
+            </Link>
           </Typography>
-        </Divider>
+          <Divider sx={{ mb: 2 }}>
+            <Typography variant="caption" sx={{ color: "#888" }}>
+              Or sign up with
+            </Typography>
+          </Divider>
 
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<GoogleG />}
-          onClick={onGoogleLogin}
-          disabled={isLoading}
-          sx={{
-            backgroundColor: "#fff",
-            borderColor: "#dadce0",
-            color: "#3c4043",
-            textTransform: "none",
-            fontWeight: 500,
-            py: 1,
-            "&:hover": { backgroundColor: "#f8f9fa", borderColor: "#dadce0" },
-          }}
-        >
-          Continue with Google
-        </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<GoogleG />}
+            onClick={onGoogleLogin}
+            disabled={isLoading}
+            sx={{
+              backgroundColor: "#fff",
+              borderColor: "#dadce0",
+              color: "#3c4043",
+              textTransform: "none",
+              fontWeight: 500,
+              py: 1,
+              "&:hover": { backgroundColor: "#f8f9fa", borderColor: "#dadce0" },
+            }}
+          >
+            Continue with Google
+          </Button>
 
-        <Typography
-          variant="caption"
-          sx={{ display: "block", textAlign: "center", color: "#888", mt: 2 }}
-        >
-          By signing up, you agree to the{" "}
-          <Link href="#" underline="hover" sx={{ color: "#555", fontWeight: 700 }}>
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href="#" underline="hover" sx={{ color: "#555", fontWeight: 700 }}>
-            Privacy Policy
-          </Link>
-        </Typography>
+          <Typography
+            variant="caption"
+            sx={{ display: "block", textAlign: "center", color: "#888", mt: 2 }}
+          >
+            By signing up, you agree to the{" "}
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: "#555", fontWeight: 700 }}
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: "#555", fontWeight: 700 }}
+            >
+              Privacy Policy
+            </Link>
+          </Typography>
+        </Box>
       </Box>
     </>
   );
