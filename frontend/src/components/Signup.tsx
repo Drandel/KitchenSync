@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -12,22 +11,23 @@ import LockIcon from "@mui/icons-material/Lock";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import corkTexture from "../assets/cork_texture.webp";
 import GoogleG from "./GoogleG";
-
-const DARK_GREEN = "#2d5a27";
-
-const inputSx = {
-  backgroundColor: "#faf7f0",
-  borderRadius: 1,
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": { border: "none" },
-  },
-};
+import {
+  DARK_GREEN,
+  ICON_BROWN,
+  outerCardSx,
+  corkSectionSx,
+  creamSectionSx,
+  oauthButtonSx,
+  AuthTextField,
+  SubmitButton,
+} from "../styles/authForms";
 
 export interface SignupFormProps {
-  fullName: string;
-  onFullNameChange: (value: string) => void;
+  firstName: string;
+  lastName: string;
+  onFirstNameChange: (value: string) => void;
+  onLastNameChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
   password: string;
@@ -42,8 +42,10 @@ export interface SignupFormProps {
 }
 
 export default function SignupForm({
-  fullName,
-  onFullNameChange,
+  firstName,
+  lastName,
+  onFirstNameChange,
+  onLastNameChange,
   email,
   onEmailChange,
   password,
@@ -94,46 +96,43 @@ export default function SignupForm({
       </Typography>
 
       {/* Unified card: cork top + cream bottom */}
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 480,
-          borderRadius: 3,
-          overflow: "hidden",
-        }}
-      >
-        {/* Cork section: form fields + submit + toggle link */}
-        <Box
-          component="form"
-          onSubmit={onSubmit}
-          sx={{
-            backgroundImage: `url(${corkTexture})`,
-            backgroundSize: "auto",
-            p: 3,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1.5,
-          }}
-        >
-          <TextField
+      <Box sx={outerCardSx}>
+        {/* Cork section: form fields + submit */}
+        <Box component="form" onSubmit={onSubmit} sx={corkSectionSx}>
+          <AuthTextField
             fullWidth
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => onFullNameChange(e.target.value)}
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => onFirstNameChange(e.target.value)}
             required
             slotProps={{
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon sx={{ color: "#8b7355" }} />
+                    <PersonIcon sx={{ color: ICON_BROWN }} />
                   </InputAdornment>
                 ),
               },
             }}
-            sx={inputSx}
+          />
+          <AuthTextField
+            fullWidth
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => onLastNameChange(e.target.value)}
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: ICON_BROWN }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
 
-          <TextField
+          <AuthTextField
             fullWidth
             type="email"
             placeholder="Email"
@@ -144,15 +143,14 @@ export default function SignupForm({
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <EmailIcon sx={{ color: "#8b7355" }} />
+                    <EmailIcon sx={{ color: ICON_BROWN }} />
                   </InputAdornment>
                 ),
               },
             }}
-            sx={inputSx}
           />
 
-          <TextField
+          <AuthTextField
             fullWidth
             type={showPassword ? "text" : "password"}
             placeholder="Password"
@@ -163,7 +161,7 @@ export default function SignupForm({
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LockIcon sx={{ color: "#8b7355" }} />
+                    <LockIcon sx={{ color: ICON_BROWN }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
@@ -172,18 +170,21 @@ export default function SignupForm({
                       onClick={onTogglePassword}
                       edge="end"
                       size="small"
-                      sx={{ color: "#8b7355" }}
+                      sx={{ color: ICON_BROWN }}
                       aria-label={
                         showPassword ? "Hide password" : "Show password"
                       }
                     >
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
               },
             }}
-            sx={inputSx}
           />
 
           {error && (
@@ -192,32 +193,26 @@ export default function SignupForm({
             </Typography>
           )}
 
-          <Button
+          <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             disabled={isLoading}
-            sx={{
-              backgroundColor: DARK_GREEN,
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: "1rem",
-              textTransform: "none",
-              py: 1.25,
-              borderRadius: 1.5,
-              "&:hover": { backgroundColor: "#1e3d1b" },
-            }}
           >
             Create Account
-          </Button>
-
+          </SubmitButton>
         </Box>
 
-        {/* Cream/linen section: OAuth + legal */}
-        <Box sx={{ backgroundColor: "#faf7f0", p: 3 }}>
+        {/* Cream/linen section: toggle link + OAuth + legal */}
+        <Box sx={creamSectionSx}>
           <Typography
             variant="body2"
-            sx={{ textAlign: "center", color: DARK_GREEN, fontWeight: 600, mb: 2 }}
+            sx={{
+              textAlign: "center",
+              color: DARK_GREEN,
+              fontWeight: 600,
+              mb: 2,
+            }}
           >
             Already have an account?{" "}
             <Link
@@ -229,6 +224,7 @@ export default function SignupForm({
               Log in
             </Link>
           </Typography>
+
           <Divider sx={{ mb: 2 }}>
             <Typography variant="caption" sx={{ color: "#888" }}>
               Or sign up with
@@ -241,15 +237,7 @@ export default function SignupForm({
             startIcon={<GoogleG />}
             onClick={onGoogleLogin}
             disabled={isLoading}
-            sx={{
-              backgroundColor: "#fff",
-              borderColor: "#dadce0",
-              color: "#3c4043",
-              textTransform: "none",
-              fontWeight: 500,
-              py: 1,
-              "&:hover": { backgroundColor: "#f8f9fa", borderColor: "#dadce0" },
-            }}
+            sx={oauthButtonSx}
           >
             Continue with Google
           </Button>

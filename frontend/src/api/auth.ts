@@ -14,7 +14,8 @@ export interface AuthResponse {
 
 // STUB: POST /auth/register
 export async function registerUser(data: {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }): Promise<AuthResponse> {
@@ -42,7 +43,9 @@ export async function loginUser(data: {
 }
 
 // STUB: POST /auth/google — expects a Google OAuth token from the client-side flow
-export async function loginWithGoogle(googleToken: string): Promise<AuthResponse> {
+export async function loginWithGoogle(
+  googleToken: string,
+): Promise<AuthResponse> {
   const res = await fetch(`${API_URL}/auth/google`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

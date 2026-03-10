@@ -7,7 +7,12 @@ export function useRegister() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function register(data: { fullName: string; email: string; password: string }) {
+  async function register(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  }) {
     setIsLoading(true);
     setError(null);
     try {

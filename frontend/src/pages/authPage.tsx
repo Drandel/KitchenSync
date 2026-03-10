@@ -5,8 +5,7 @@ import { useLogin } from "../hooks/useLogin";
 import { useGoogleLogin } from "../hooks/useGoogleLogin";
 import LoginForm from "../components/Login";
 import SignupForm from "../components/Signup";
-
-const LINEN = "#f0ebe0";
+import { pageWrapperSx } from "../styles/authForms";
 
 type Mode = "signup" | "login";
 
@@ -17,11 +16,16 @@ interface AuthPageProps {
 export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   const [mode, setMode] = useState<Mode>(defaultMode);
   const [showPassword, setShowPassword] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { register, isLoading: registerLoading, error: registerError } = useRegister();
+  const {
+    register,
+    isLoading: registerLoading,
+    error: registerError,
+  } = useRegister();
   const { login, isLoading: loginLoading, error: loginError } = useLogin();
   const { loginWithGoogle, isLoading: googleLoading } = useGoogleLogin();
 
@@ -31,7 +35,7 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (mode === "signup") {
-      await register({ fullName, email, password });
+      await register({ firstName, lastName, email, password });
     } else {
       await login({ email, password });
     }
@@ -45,7 +49,8 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
 
   function toggleMode() {
     setMode((prev) => (prev === "signup" ? "login" : "signup"));
-    setFullName("");
+    setFirstName("");
+    setLastName("");
     setEmail("");
     setPassword("");
   }
@@ -65,19 +70,15 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   };
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        backgroundColor: LINEN,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        py: 6,
-        px: 2,
-      }}
-    >
+    <Box sx={pageWrapperSx}>
       {mode === "signup" ? (
-        <SignupForm {...sharedProps} fullName={fullName} onFullNameChange={setFullName} />
+        <SignupForm
+          {...sharedProps}
+          firstName={firstName}
+          lastName={lastName}
+          onFirstNameChange={setFirstName}
+          onLastNameChange={setLastName}
+        />
       ) : (
         <LoginForm {...sharedProps} />
       )}
