@@ -9,28 +9,11 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleG from "./GoogleG";
 import AuthTextInput from "./AuthTextInput";
+import * as Sx from "../styles/authForms";
 import {
-  DARK_GREEN,
-  MUTED_GRAY,
-  ERROR_RED,
-  WARNING_AMBER,
-  outerCardSx,
-  corkSectionSx,
-  creamSectionSx,
-  logoBoxSx,
-  logoTextSx,
-  pageTitleSx,
-  pageSubtitleSx,
-  toggleTextSx,
-  toggleLinkSx,
-  legalTextSx,
-  legalLinkSx,
   requirementRowSx,
   requirementsClipSx,
   requirementsInnerSx,
-  warningBoxSx,
-  errorBoxSx,
-  oauthButtonSx,
   SubmitButton,
 } from "../styles/authForms";
 import type {
@@ -76,22 +59,27 @@ export default function SignupForm({
 
   return (
     <>
-      <Box sx={logoBoxSx}>
+      <Box sx={Sx.logoBoxSx}>
         <RestaurantMenuIcon sx={{ fontSize: 28 }} />
-        <Typography variant="h6" fontWeight={700} sx={logoTextSx}>
+        <Typography variant="h6" fontWeight={700} sx={Sx.logoTextSx}>
           KitchenSync
         </Typography>
       </Box>
 
-      <Typography variant="h4" fontWeight={700} sx={pageTitleSx}>
+      <Typography variant="h4" fontWeight={700} sx={Sx.pageTitleSx}>
         Create Your Account
       </Typography>
-      <Typography variant="body2" sx={pageSubtitleSx}>
+      <Typography variant="body2" sx={Sx.pageSubtitleSx}>
         Sign up to start saving &amp; sharing your favorite recipes.
       </Typography>
 
-      <Box sx={outerCardSx}>
-        <Box component="form" onSubmit={onSubmit} noValidate sx={corkSectionSx}>
+      <Box sx={Sx.outerCardSx}>
+        <Box
+          component="form"
+          onSubmit={onSubmit}
+          noValidate
+          sx={Sx.corkSectionSx}
+        >
           <AuthTextInput
             variant="firstName"
             value={authFormData.firstName}
@@ -141,13 +129,13 @@ export default function SignupForm({
                 {passwordRequirements.map(({ label, met }) => (
                   <Box key={label} sx={requirementRowSx}>
                     {met ? (
-                      <CheckIcon sx={{ fontSize: 14, color: DARK_GREEN }} />
+                      <CheckIcon sx={{ fontSize: 14, color: Sx.DARK_GREEN }} />
                     ) : (
-                      <CloseIcon sx={{ fontSize: 14, color: ERROR_RED }} />
+                      <CloseIcon sx={{ fontSize: 14, color: Sx.ERROR_RED }} />
                     )}
                     <Typography
                       variant="caption"
-                      sx={{ color: met ? DARK_GREEN : MUTED_GRAY }}
+                      sx={{ color: met ? Sx.DARK_GREEN : Sx.MUTED_GRAY }}
                     >
                       {label}
                     </Typography>
@@ -158,16 +146,16 @@ export default function SignupForm({
           </Box>
 
           {warning && (
-            <Box sx={warningBoxSx}>
-              <Typography variant="caption" sx={{ color: WARNING_AMBER }}>
+            <Box sx={Sx.warningBoxSx}>
+              <Typography variant="caption" sx={{ color: Sx.WARNING_AMBER }}>
                 {warning}
               </Typography>
             </Box>
           )}
 
           {error && (
-            <Box sx={errorBoxSx}>
-              <Typography variant="caption" sx={{ color: ERROR_RED }}>
+            <Box sx={Sx.errorBoxSx}>
+              <Typography variant="caption" sx={{ color: Sx.ERROR_RED }}>
                 {error}
               </Typography>
             </Box>
@@ -183,21 +171,21 @@ export default function SignupForm({
           </SubmitButton>
         </Box>
 
-        <Box sx={creamSectionSx}>
-          <Typography variant="body2" sx={toggleTextSx}>
+        <Box sx={Sx.creamSectionSx}>
+          <Typography variant="body2" sx={Sx.toggleTextSx}>
             Already have an account?{" "}
             <Link
               component="button"
               type="button"
               onClick={onToggleMode}
-              sx={toggleLinkSx}
+              sx={Sx.toggleLinkSx}
             >
               Log in
             </Link>
           </Typography>
 
           <Divider sx={{ mb: 2 }}>
-            <Typography variant="caption" sx={{ color: MUTED_GRAY }}>
+            <Typography variant="caption" sx={{ color: Sx.MUTED_GRAY }}>
               Or sign up with
             </Typography>
           </Divider>
@@ -208,18 +196,18 @@ export default function SignupForm({
             startIcon={<GoogleG />}
             onClick={onGoogleLogin}
             disabled={isLoading}
-            sx={oauthButtonSx}
+            sx={Sx.oauthButtonSx}
           >
             Continue with Google
           </Button>
 
-          <Typography variant="caption" sx={legalTextSx}>
+          <Typography variant="caption" sx={Sx.legalTextSx}>
             By signing up, you agree to the{" "}
-            <Link href="#" underline="hover" sx={legalLinkSx}>
+            <Link href="#" underline="hover" sx={Sx.legalLinkSx}>
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="#" underline="hover" sx={legalLinkSx}>
+            <Link href="#" underline="hover" sx={Sx.legalLinkSx}>
               Privacy Policy
             </Link>
           </Typography>

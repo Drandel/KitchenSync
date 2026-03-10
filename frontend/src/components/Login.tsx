@@ -6,27 +6,8 @@ import Link from "@mui/material/Link";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import GoogleG from "./GoogleG";
 import AuthTextInput from "./AuthTextInput";
-import {
-  DARK_GREEN,
-  MUTED_GRAY,
-  ERROR_RED,
-  WARNING_AMBER,
-  outerCardSx,
-  corkSectionSx,
-  creamSectionSx,
-  logoBoxSx,
-  logoTextSx,
-  pageTitleSx,
-  pageSubtitleSx,
-  toggleTextSx,
-  toggleLinkSx,
-  legalTextSx,
-  legalLinkSx,
-  warningBoxSx,
-  errorBoxSx,
-  oauthButtonSx,
-  SubmitButton,
-} from "../styles/authForms";
+import * as Sx from "../styles/authForms";
+import { SubmitButton } from "../styles/authForms";
 import type {
   AuthFormState,
   AuthFormAction,
@@ -55,22 +36,27 @@ export default function LoginForm({
 }: LoginFormProps) {
   return (
     <>
-      <Box sx={logoBoxSx}>
+      <Box sx={Sx.logoBoxSx}>
         <RestaurantMenuIcon sx={{ fontSize: 28 }} />
-        <Typography variant="h6" fontWeight={700} sx={logoTextSx}>
+        <Typography variant="h6" fontWeight={700} sx={Sx.logoTextSx}>
           KitchenSync
         </Typography>
       </Box>
 
-      <Typography variant="h4" fontWeight={700} sx={pageTitleSx}>
+      <Typography variant="h4" fontWeight={700} sx={Sx.pageTitleSx}>
         Welcome Back
       </Typography>
-      <Typography variant="body2" sx={pageSubtitleSx}>
+      <Typography variant="body2" sx={Sx.pageSubtitleSx}>
         Sign in to continue to KitchenSync.
       </Typography>
 
-      <Box sx={outerCardSx}>
-        <Box component="form" onSubmit={onSubmit} noValidate sx={corkSectionSx}>
+      <Box sx={Sx.outerCardSx}>
+        <Box
+          component="form"
+          onSubmit={onSubmit}
+          noValidate
+          sx={Sx.corkSectionSx}
+        >
           <AuthTextInput
             variant="email"
             value={authFormData.email}
@@ -92,16 +78,16 @@ export default function LoginForm({
           />
 
           {warning && (
-            <Box sx={warningBoxSx}>
-              <Typography variant="caption" sx={{ color: WARNING_AMBER }}>
+            <Box sx={Sx.warningBoxSx}>
+              <Typography variant="caption" sx={{ color: Sx.WARNING_AMBER }}>
                 {warning}
               </Typography>
             </Box>
           )}
 
           {error && (
-            <Box sx={errorBoxSx}>
-              <Typography variant="caption" sx={{ color: ERROR_RED }}>
+            <Box sx={Sx.errorBoxSx}>
+              <Typography variant="caption" sx={{ color: Sx.ERROR_RED }}>
                 {error}
               </Typography>
             </Box>
@@ -117,21 +103,21 @@ export default function LoginForm({
           </SubmitButton>
         </Box>
 
-        <Box sx={creamSectionSx}>
-          <Typography variant="body2" sx={toggleTextSx}>
+        <Box sx={Sx.creamSectionSx}>
+          <Typography variant="body2" sx={Sx.toggleTextSx}>
             Don't have an account?{" "}
             <Link
               component="button"
               type="button"
               onClick={onToggleMode}
-              sx={toggleLinkSx}
+              sx={Sx.toggleLinkSx}
             >
               Sign up
             </Link>
           </Typography>
 
           <Divider sx={{ mb: 2 }}>
-            <Typography variant="caption" sx={{ color: MUTED_GRAY }}>
+            <Typography variant="caption" sx={{ color: Sx.MUTED_GRAY }}>
               Or sign in with
             </Typography>
           </Divider>
@@ -142,18 +128,18 @@ export default function LoginForm({
             startIcon={<GoogleG />}
             onClick={onGoogleLogin}
             disabled={isLoading}
-            sx={oauthButtonSx}
+            sx={Sx.oauthButtonSx}
           >
             Continue with Google
           </Button>
 
-          <Typography variant="caption" sx={legalTextSx}>
+          <Typography variant="caption" sx={Sx.legalTextSx}>
             By signing in, you agree to the{" "}
-            <Link href="#" underline="hover" sx={legalLinkSx}>
+            <Link href="#" underline="hover" sx={Sx.legalLinkSx}>
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="#" underline="hover" sx={legalLinkSx}>
+            <Link href="#" underline="hover" sx={Sx.legalLinkSx}>
               Privacy Policy
             </Link>
           </Typography>
