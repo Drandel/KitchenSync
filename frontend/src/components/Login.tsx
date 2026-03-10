@@ -21,14 +21,11 @@ import {
   AuthTextField,
   SubmitButton,
 } from "../styles/authForms";
+import type { AuthFormState, AuthFormAction } from "../reducers/authFormReducer";
 
 export interface LoginFormProps {
-  email: string;
-  onEmailChange: (value: string) => void;
-  password: string;
-  onPasswordChange: (value: string) => void;
-  showPassword: boolean;
-  onTogglePassword: () => void;
+  authFormData: AuthFormState;
+  dispatch: React.Dispatch<AuthFormAction>;
   isLoading: boolean;
   error: string | null;
   onSubmit: (e: React.FormEvent) => void;
@@ -37,12 +34,8 @@ export interface LoginFormProps {
 }
 
 export default function LoginForm({
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onTogglePassword,
+  authFormData,
+  dispatch,
   isLoading,
   error,
   onSubmit,
@@ -75,8 +68,8 @@ export default function LoginForm({
             fullWidth
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => onEmailChange(e.target.value)}
+            value={authFormData.email}
+            onChange={(e) => dispatch({ type: "emailUpdated", payload: e.target.value })}
             required
             slotProps={{
               input: {
@@ -91,10 +84,10 @@ export default function LoginForm({
 
           <AuthTextField
             fullWidth
-            type={showPassword ? "text" : "password"}
+            type={authFormData.showPassword ? "text" : "password"}
             placeholder="Password"
-            value={password}
-            onChange={(e) => onPasswordChange(e.target.value)}
+            value={authFormData.password}
+            onChange={(e) => dispatch({ type: "passwordUpdated", payload: e.target.value })}
             required
             slotProps={{
               input: {
@@ -106,13 +99,13 @@ export default function LoginForm({
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={onTogglePassword}
+                      onClick={() => dispatch({ type: "passwordVisibilityToggled" })}
                       edge="end"
                       size="small"
                       sx={{ color: ICON_BROWN }}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={authFormData.showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      {authFormData.showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
                   </InputAdornment>
                 ),

@@ -6,6 +6,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -22,18 +23,14 @@ import {
   AuthTextField,
   SubmitButton,
 } from "../styles/authForms";
+import type {
+  AuthFormState,
+  AuthFormAction,
+} from "../reducers/authFormReducer";
 
 export interface SignupFormProps {
-  firstName: string;
-  lastName: string;
-  onFirstNameChange: (value: string) => void;
-  onLastNameChange: (value: string) => void;
-  email: string;
-  onEmailChange: (value: string) => void;
-  password: string;
-  onPasswordChange: (value: string) => void;
-  showPassword: boolean;
-  onTogglePassword: () => void;
+  authFormData: AuthFormState;
+  dispatch: React.Dispatch<AuthFormAction>;
   isLoading: boolean;
   error: string | null;
   onSubmit: (e: React.FormEvent) => void;
@@ -42,16 +39,8 @@ export interface SignupFormProps {
 }
 
 export default function SignupForm({
-  firstName,
-  lastName,
-  onFirstNameChange,
-  onLastNameChange,
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onTogglePassword,
+  authFormData,
+  dispatch,
   isLoading,
   error,
   onSubmit,
@@ -86,7 +75,7 @@ export default function SignupForm({
         fontWeight={700}
         sx={{ color: DARK_GREEN, textAlign: "center", mb: 1, maxWidth: 420 }}
       >
-        Create Your KitchenSync Account
+        Create Your Account
       </Typography>
       <Typography
         variant="body2"
@@ -102,24 +91,10 @@ export default function SignupForm({
           <AuthTextField
             fullWidth
             placeholder="First Name"
-            value={firstName}
-            onChange={(e) => onFirstNameChange(e.target.value)}
-            required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon sx={{ color: ICON_BROWN }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-          <AuthTextField
-            fullWidth
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => onLastNameChange(e.target.value)}
+            value={authFormData.firstName}
+            onChange={(e) =>
+              dispatch({ type: "firstNameUpdated", payload: e.target.value })
+            }
             required
             slotProps={{
               input: {
@@ -134,10 +109,50 @@ export default function SignupForm({
 
           <AuthTextField
             fullWidth
+            placeholder="Last Name"
+            value={authFormData.lastName}
+            onChange={(e) =>
+              dispatch({ type: "lastNameUpdated", payload: e.target.value })
+            }
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon sx={{ color: ICON_BROWN }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          <AuthTextField
+            fullWidth
+            placeholder="Username"
+            value={authFormData.username}
+            onChange={(e) =>
+              dispatch({ type: "usernameUpdated", payload: e.target.value })
+            }
+            required
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccountCircleIcon sx={{ color: ICON_BROWN }} />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+
+          <AuthTextField
+            fullWidth
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => onEmailChange(e.target.value)}
+            value={authFormData.email}
+            onChange={(e) =>
+              dispatch({ type: "emailUpdated", payload: e.target.value })
+            }
             required
             slotProps={{
               input: {
@@ -152,10 +167,12 @@ export default function SignupForm({
 
           <AuthTextField
             fullWidth
-            type={showPassword ? "text" : "password"}
+            type={authFormData.showPassword ? "text" : "password"}
             placeholder="Password"
-            value={password}
-            onChange={(e) => onPasswordChange(e.target.value)}
+            value={authFormData.password}
+            onChange={(e) =>
+              dispatch({ type: "passwordUpdated", payload: e.target.value })
+            }
             required
             slotProps={{
               input: {
@@ -167,15 +184,19 @@ export default function SignupForm({
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={onTogglePassword}
+                      onClick={() =>
+                        dispatch({ type: "passwordVisibilityToggled" })
+                      }
                       edge="end"
                       size="small"
                       sx={{ color: ICON_BROWN }}
                       aria-label={
-                        showPassword ? "Hide password" : "Show password"
+                        authFormData.showPassword
+                          ? "Hide password"
+                          : "Show password"
                       }
                     >
-                      {showPassword ? (
+                      {authFormData.showPassword ? (
                         <VisibilityOffIcon />
                       ) : (
                         <VisibilityIcon />

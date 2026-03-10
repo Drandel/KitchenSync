@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import Box from "@mui/material/Box";
 import { useRegister } from "../hooks/useRegister";
 import { useLogin } from "../hooks/useLogin";
@@ -6,6 +6,10 @@ import { useGoogleLogin } from "../hooks/useGoogleLogin";
 import LoginForm from "../components/Login";
 import SignupForm from "../components/Signup";
 import { pageWrapperSx } from "../styles/authForms";
+import {
+  authFormReducer,
+  initialAuthFormState,
+} from "../reducers/authFormReducer";
 
 type Mode = "signup" | "login";
 
@@ -15,11 +19,10 @@ interface AuthPageProps {
 
 export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   const [mode, setMode] = useState<Mode>(defaultMode);
-  const [showPassword, setShowPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formState, dispatch] = useReducer(
+    authFormReducer,
+    initialAuthFormState,
+  );
 
   const {
     register,
@@ -35,8 +38,10 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (mode === "signup") {
+      const { firstName, lastName, email, password } = formState;
       await register({ firstName, lastName, email, password });
     } else {
+      const { email, password } = formState;
       await login({ email, password });
     }
     // TODO: navigate to "/" on success once auth backend is live
@@ -49,19 +54,13 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
 
   function toggleMode() {
     setMode((prev) => (prev === "signup" ? "login" : "signup"));
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
+    dispatch({ type: "formReset" });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   const sharedProps = {
-    email,
-    onEmailChange: setEmail,
-    password,
-    onPasswordChange: setPassword,
-    showPassword,
-    onTogglePassword: () => setShowPassword((v) => !v),
+    authFormData: formState,
+    dispatch,
     isLoading,
     error,
     onSubmit: handleSubmit,
@@ -72,13 +71,7 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   return (
     <Box sx={pageWrapperSx}>
       {mode === "signup" ? (
-        <SignupForm
-          {...sharedProps}
-          firstName={firstName}
-          lastName={lastName}
-          onFirstNameChange={setFirstName}
-          onLastNameChange={setLastName}
-        />
+        <SignupForm {...sharedProps} />
       ) : (
         <LoginForm {...sharedProps} />
       )}
