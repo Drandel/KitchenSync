@@ -5,6 +5,7 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
+  username: string;
 }
 
 export interface AuthResponse {
@@ -16,6 +17,7 @@ export interface AuthResponse {
 export async function registerUser(data: {
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
   password: string;
 }): Promise<AuthResponse> {

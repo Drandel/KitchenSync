@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -9,16 +10,35 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import GoogleG from "./GoogleG";
 import {
   DARK_GREEN,
   ICON_BROWN,
+  MUTED_GRAY,
+  ERROR_RED,
+  WARNING_AMBER,
   outerCardSx,
   corkSectionSx,
   creamSectionSx,
+  logoBoxSx,
+  logoTextSx,
+  pageTitleSx,
+  pageSubtitleSx,
+  toggleTextSx,
+  toggleLinkSx,
+  legalTextSx,
+  legalLinkSx,
+  requirementRowSx,
+  requirementsClipSx,
+  requirementsInnerSx,
+  warningBoxSx,
+  errorBoxSx,
   oauthButtonSx,
   AuthTextField,
   SubmitButton,
@@ -28,10 +48,20 @@ import type {
   AuthFormAction,
 } from "../reducers/authFormReducer";
 
+function getPasswordRequirements(password: string) {
+  return [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "One lowercase letter", met: /[a-z]/.test(password) },
+    { label: "One uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "One number", met: /[0-9]/.test(password) },
+  ];
+}
+
 export interface SignupFormProps {
   authFormData: AuthFormState;
   dispatch: React.Dispatch<AuthFormAction>;
   isLoading: boolean;
+  warning: string | null;
   error: string | null;
   onSubmit: (e: React.FormEvent) => void;
   onGoogleLogin: () => void;
@@ -42,52 +72,40 @@ export default function SignupForm({
   authFormData,
   dispatch,
   isLoading,
+  warning,
   error,
   onSubmit,
   onGoogleLogin,
   onToggleMode,
 }: SignupFormProps) {
+  const [hasPasswordFocused, setHasPasswordFocused] = useState(false);
+
+  const passwordRequirements = getPasswordRequirements(authFormData.password);
+  const allRequirementsMet = passwordRequirements.every((r) => r.met);
+  const showRequirements = hasPasswordFocused && !allRequirementsMet;
+
   return (
     <>
       {/* Logo */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          mb: 2,
-          color: DARK_GREEN,
-        }}
-      >
+      <Box sx={logoBoxSx}>
         <RestaurantMenuIcon sx={{ fontSize: 28 }} />
-        <Typography
-          variant="h6"
-          fontWeight={700}
-          sx={{ color: DARK_GREEN, letterSpacing: 0.5 }}
-        >
+        <Typography variant="h6" fontWeight={700} sx={logoTextSx}>
           KitchenSync
         </Typography>
       </Box>
 
       {/* Title */}
-      <Typography
-        variant="h4"
-        fontWeight={700}
-        sx={{ color: DARK_GREEN, textAlign: "center", mb: 1, maxWidth: 420 }}
-      >
+      <Typography variant="h4" fontWeight={700} sx={pageTitleSx}>
         Create Your Account
       </Typography>
-      <Typography
-        variant="body2"
-        sx={{ color: "#6b6b6b", mb: 3, textAlign: "center" }}
-      >
+      <Typography variant="body2" sx={pageSubtitleSx}>
         Sign up to start saving &amp; sharing your favorite recipes.
       </Typography>
 
       {/* Unified card: cork top + cream bottom */}
       <Box sx={outerCardSx}>
         {/* Cork section: form fields + submit */}
-        <Box component="form" onSubmit={onSubmit} sx={corkSectionSx}>
+        <Box component="form" onSubmit={onSubmit} noValidate sx={corkSectionSx}>
           <AuthTextField
             fullWidth
             placeholder="First Name"
@@ -165,53 +183,88 @@ export default function SignupForm({
             }}
           />
 
-          <AuthTextField
-            fullWidth
-            type={authFormData.showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={authFormData.password}
-            onChange={(e) =>
-              dispatch({ type: "passwordUpdated", payload: e.target.value })
-            }
-            required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon sx={{ color: ICON_BROWN }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        dispatch({ type: "passwordVisibilityToggled" })
+          <Box>
+            <AuthTextField
+              fullWidth
+              type={authFormData.showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={authFormData.password}
+              onChange={(e) =>
+                dispatch({ type: "passwordUpdated", payload: e.target.value })
+              }
+              onFocus={() => setHasPasswordFocused(true)}
+              required
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      {allRequirementsMet
+                        ? <LockIcon sx={{ color: ICON_BROWN }} />
+                        : <LockOpenIcon sx={{ color: ICON_BROWN }} />
                       }
-                      edge="end"
-                      size="small"
-                      sx={{ color: ICON_BROWN }}
-                      aria-label={
-                        authFormData.showPassword
-                          ? "Hide password"
-                          : "Show password"
-                      }
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          dispatch({ type: "passwordVisibilityToggled" })
+                        }
+                        edge="end"
+                        size="small"
+                        sx={{ color: ICON_BROWN }}
+                        aria-label={
+                          authFormData.showPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+                        {authFormData.showPassword
+                          ? <VisibilityOffIcon />
+                          : <VisibilityIcon />
+                        }
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            {/* Clip container — overflow hidden collapses the space when hidden */}
+            <Box sx={requirementsClipSx(showRequirements)}>
+              {/* Inner box slides up/down to sell the "from behind" illusion */}
+              <Box sx={requirementsInnerSx(showRequirements)}>
+                {passwordRequirements.map(({ label, met }) => (
+                  <Box key={label} sx={requirementRowSx}>
+                    {met
+                      ? <CheckIcon sx={{ fontSize: 14, color: DARK_GREEN }} />
+                      : <CloseIcon sx={{ fontSize: 14, color: ERROR_RED }} />
+                    }
+                    <Typography
+                      variant="caption"
+                      sx={{ color: met ? DARK_GREEN : MUTED_GRAY }}
                     >
-                      {authFormData.showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+                      {label}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </Box>
+
+          {warning && (
+            <Box sx={warningBoxSx}>
+              <Typography variant="caption" sx={{ color: WARNING_AMBER }}>
+                {warning}
+              </Typography>
+            </Box>
+          )}
 
           {error && (
-            <Typography variant="caption" sx={{ color: "#c0392b" }}>
-              {error}
-            </Typography>
+            <Box sx={errorBoxSx}>
+              <Typography variant="caption" sx={{ color: ERROR_RED }}>
+                {error}
+              </Typography>
+            </Box>
           )}
 
           <SubmitButton
@@ -226,28 +279,15 @@ export default function SignupForm({
 
         {/* Cream/linen section: toggle link + OAuth + legal */}
         <Box sx={creamSectionSx}>
-          <Typography
-            variant="body2"
-            sx={{
-              textAlign: "center",
-              color: DARK_GREEN,
-              fontWeight: 600,
-              mb: 2,
-            }}
-          >
+          <Typography variant="body2" sx={toggleTextSx}>
             Already have an account?{" "}
-            <Link
-              component="button"
-              type="button"
-              onClick={onToggleMode}
-              sx={{ color: DARK_GREEN, fontWeight: 700 }}
-            >
+            <Link component="button" type="button" onClick={onToggleMode} sx={toggleLinkSx}>
               Log in
             </Link>
           </Typography>
 
           <Divider sx={{ mb: 2 }}>
-            <Typography variant="caption" sx={{ color: "#888" }}>
+            <Typography variant="caption" sx={{ color: MUTED_GRAY }}>
               Or sign up with
             </Typography>
           </Divider>
@@ -263,24 +303,13 @@ export default function SignupForm({
             Continue with Google
           </Button>
 
-          <Typography
-            variant="caption"
-            sx={{ display: "block", textAlign: "center", color: "#888", mt: 2 }}
-          >
+          <Typography variant="caption" sx={legalTextSx}>
             By signing up, you agree to the{" "}
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: "#555", fontWeight: 700 }}
-            >
+            <Link href="#" underline="hover" sx={legalLinkSx}>
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: "#555", fontWeight: 700 }}
-            >
+            <Link href="#" underline="hover" sx={legalLinkSx}>
               Privacy Policy
             </Link>
           </Typography>

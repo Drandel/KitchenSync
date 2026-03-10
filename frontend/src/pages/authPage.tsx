@@ -19,6 +19,7 @@ interface AuthPageProps {
 
 export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   const [mode, setMode] = useState<Mode>(defaultMode);
+  const [warning, setWarning] = useState<string | null>(null);
   const [formState, dispatch] = useReducer(
     authFormReducer,
     initialAuthFormState,
@@ -37,11 +38,22 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (mode === "signup") {
-      const { firstName, lastName, email, password } = formState;
-      await register({ firstName, lastName, email, password });
+      const { firstName, lastName, username, email, password } = formState;
+      if (!firstName || !lastName || !username || !email || !password) {
+        setWarning("Please fill out all fields.");
+        return;
+      }
+      setWarning(null);
+      await register({ firstName, lastName, username, email, password });
     } else {
       const { email, password } = formState;
+      if (!email || !password) {
+        setWarning("Please fill out all fields.");
+        return;
+      }
+      setWarning(null);
       await login({ email, password });
     }
     // TODO: navigate to "/" on success once auth backend is live
@@ -54,6 +66,7 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
 
   function toggleMode() {
     setMode((prev) => (prev === "signup" ? "login" : "signup"));
+    setWarning(null);
     dispatch({ type: "formReset" });
     window.scrollTo({ top: 0, behavior: "instant" });
   }
@@ -62,6 +75,7 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
     authFormData: formState,
     dispatch,
     isLoading,
+    warning,
     error,
     onSubmit: handleSubmit,
     onGoogleLogin: handleGoogleLogin,

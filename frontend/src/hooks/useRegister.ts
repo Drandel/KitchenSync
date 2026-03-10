@@ -10,6 +10,7 @@ export function useRegister() {
   async function register(data: {
     firstName: string;
     lastName: string;
+    username: string;
     email: string;
     password: string;
   }) {

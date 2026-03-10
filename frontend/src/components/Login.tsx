@@ -14,9 +14,22 @@ import GoogleG from "./GoogleG";
 import {
   DARK_GREEN,
   ICON_BROWN,
+  MUTED_GRAY,
+  ERROR_RED,
+  WARNING_AMBER,
   outerCardSx,
   corkSectionSx,
   creamSectionSx,
+  logoBoxSx,
+  logoTextSx,
+  pageTitleSx,
+  pageSubtitleSx,
+  toggleTextSx,
+  toggleLinkSx,
+  legalTextSx,
+  legalLinkSx,
+  warningBoxSx,
+  errorBoxSx,
   oauthButtonSx,
   AuthTextField,
   SubmitButton,
@@ -27,6 +40,7 @@ export interface LoginFormProps {
   authFormData: AuthFormState;
   dispatch: React.Dispatch<AuthFormAction>;
   isLoading: boolean;
+  warning: string | null;
   error: string | null;
   onSubmit: (e: React.FormEvent) => void;
   onGoogleLogin: () => void;
@@ -37,6 +51,7 @@ export default function LoginForm({
   authFormData,
   dispatch,
   isLoading,
+  warning,
   error,
   onSubmit,
   onGoogleLogin,
@@ -45,25 +60,25 @@ export default function LoginForm({
   return (
     <>
       {/* Logo */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2, color: DARK_GREEN }}>
+      <Box sx={logoBoxSx}>
         <RestaurantMenuIcon sx={{ fontSize: 28 }} />
-        <Typography variant="h6" fontWeight={700} sx={{ color: DARK_GREEN, letterSpacing: 0.5 }}>
+        <Typography variant="h6" fontWeight={700} sx={logoTextSx}>
           KitchenSync
         </Typography>
       </Box>
 
       {/* Title */}
-      <Typography variant="h4" fontWeight={700} sx={{ color: DARK_GREEN, textAlign: "center", mb: 1, maxWidth: 420 }}>
+      <Typography variant="h4" fontWeight={700} sx={pageTitleSx}>
         Welcome Back
       </Typography>
-      <Typography variant="body2" sx={{ color: "#6b6b6b", mb: 3, textAlign: "center" }}>
+      <Typography variant="body2" sx={pageSubtitleSx}>
         Sign in to continue to KitchenSync.
       </Typography>
 
       {/* Unified card: cork top + cream bottom */}
       <Box sx={outerCardSx}>
         {/* Cork section: form fields + submit */}
-        <Box component="form" onSubmit={onSubmit} sx={corkSectionSx}>
+        <Box component="form" onSubmit={onSubmit} noValidate sx={corkSectionSx}>
           <AuthTextField
             fullWidth
             type="email"
@@ -113,10 +128,20 @@ export default function LoginForm({
             }}
           />
 
+          {warning && (
+            <Box sx={warningBoxSx}>
+              <Typography variant="caption" sx={{ color: WARNING_AMBER }}>
+                {warning}
+              </Typography>
+            </Box>
+          )}
+
           {error && (
-            <Typography variant="caption" sx={{ color: "#c0392b" }}>
-              {error}
-            </Typography>
+            <Box sx={errorBoxSx}>
+              <Typography variant="caption" sx={{ color: ERROR_RED }}>
+                {error}
+              </Typography>
+            </Box>
           )}
 
           <SubmitButton type="submit" fullWidth variant="contained" disabled={isLoading}>
@@ -126,15 +151,15 @@ export default function LoginForm({
 
         {/* Cream/linen section: toggle link + OAuth + legal */}
         <Box sx={creamSectionSx}>
-          <Typography variant="body2" sx={{ textAlign: "center", color: DARK_GREEN, fontWeight: 600, mb: 2 }}>
+          <Typography variant="body2" sx={toggleTextSx}>
             Don't have an account?{" "}
-            <Link component="button" type="button" onClick={onToggleMode} sx={{ color: DARK_GREEN, fontWeight: 700 }}>
+            <Link component="button" type="button" onClick={onToggleMode} sx={toggleLinkSx}>
               Sign up
             </Link>
           </Typography>
 
           <Divider sx={{ mb: 2 }}>
-            <Typography variant="caption" sx={{ color: "#888" }}>
+            <Typography variant="caption" sx={{ color: MUTED_GRAY }}>
               Or sign in with
             </Typography>
           </Divider>
@@ -143,13 +168,13 @@ export default function LoginForm({
             Continue with Google
           </Button>
 
-          <Typography variant="caption" sx={{ display: "block", textAlign: "center", color: "#888", mt: 2 }}>
+          <Typography variant="caption" sx={legalTextSx}>
             By signing in, you agree to the{" "}
-            <Link href="#" underline="hover" sx={{ color: "#555", fontWeight: 700 }}>
+            <Link href="#" underline="hover" sx={legalLinkSx}>
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="#" underline="hover" sx={{ color: "#555", fontWeight: 700 }}>
+            <Link href="#" underline="hover" sx={legalLinkSx}>
               Privacy Policy
             </Link>
           </Typography>
