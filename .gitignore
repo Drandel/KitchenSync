@@ -16,6 +16,8 @@ node_modules/
 # Build outputs
 dist/
 build/
+generated/
+**/generated/
 
 # Docker
 .docker/
