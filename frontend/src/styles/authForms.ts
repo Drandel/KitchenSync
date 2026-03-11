@@ -4,22 +4,36 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import corkTexture from "../assets/cork_texture.webp";
 
-// ── Colors ───────────────────────────────────────────────────────────────────
+// ── Colors ────────────────────────────────────────────────────────────────────
+// Defined in tokens.ts — imported for local use and re-exported for backward compatibility.
 
-export const DARK_GREEN = "#2d5a27";
-export const ICON_BROWN = "#8b7355";
-export const LINEN = "#f0ebe0";
-export const ERROR_RED = "#c0392b";
-export const WARNING_AMBER = "#92400e";
-export const MUTED_GRAY = "#888";
-export const SUBTITLE_GRAY = "#6b6b6b";
-export const LEGAL_LINK_GRAY = "#555";
+import {
+  DARK_GREEN,
+  ICON_BROWN,
+  LINEN,
+  ERROR_RED,
+  WARNING_AMBER,
+  MUTED_GRAY,
+  SUBTITLE_GRAY,
+  LEGAL_LINK_GRAY,
+} from "./tokens";
+
+export {
+  DARK_GREEN,
+  ICON_BROWN,
+  LINEN,
+  ERROR_RED,
+  WARNING_AMBER,
+  MUTED_GRAY,
+  SUBTITLE_GRAY,
+  LEGAL_LINK_GRAY,
+} from "./tokens";
 
 // ── Page layout ──────────────────────────────────────────────────────────────
 
 export const pageWrapperSx: SxProps<Theme> = {
   flexGrow: 1,
-  backgroundColor: LINEN,
+  backgroundColor: "transparent",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -62,6 +76,7 @@ export const outerCardSx: SxProps<Theme> = {
   maxWidth: 480,
   borderRadius: 3,
   overflow: "hidden",
+  border: "1px solid #d3d3d3",
 };
 
 export const corkSectionSx: SxProps<Theme> = {

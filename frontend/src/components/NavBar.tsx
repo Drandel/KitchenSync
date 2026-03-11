@@ -15,6 +15,7 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../context/AuthContext";
+import { DARK_GREEN } from "../styles/tokens";
 
 const AUTH_NAV_ITEMS = [
   { label: "Home", route: "/" },
@@ -26,7 +27,6 @@ const AUTH_NAV_ITEMS = [
 
 const GUEST_NAV_ITEMS = [{ label: "Login / Sign Up", route: "/login" }];
 
-const DARK_GREEN = "#2d5a27";
 const WARM_WHITE = "#faf9f6";
 
 export default function NavBar() {
