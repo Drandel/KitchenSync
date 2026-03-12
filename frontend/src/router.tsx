@@ -1,16 +1,14 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom";
 import RootLayout from "./layouts/rootLayout";
 import HomePage from "./pages/homePage";
 import AuthPage from "./pages/authPage";
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RootLayout />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: "login", element: <AuthPage defaultMode="login" /> },
-      { path: "signup", element: <AuthPage defaultMode="signup" /> },
-    ],
-  },
-]);
+export const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<HomePage />} />
+      <Route path="login" element={<AuthPage defaultMode="login" />} />
+      <Route path="signup" element={<AuthPage defaultMode="signup" />} />
+    </Route>
+  )
+);

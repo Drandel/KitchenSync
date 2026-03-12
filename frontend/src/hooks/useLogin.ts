@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { loginUser } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
 
 export function useLogin() {
-  const { setUser } = useAuth();
+  const { login: authLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -11,8 +10,7 @@ export function useLogin() {
     setIsLoading(true);
     setError(null);
     try {
-      const { user } = await loginUser(data);
-      setUser(user);
+      await authLogin(data.email, data.password);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Login failed");
     } finally {
@@ -20,5 +18,5 @@ export function useLogin() {
     }
   }
 
-  return { login, isLoading, error };
+  return { login, isLoading, error, clearError: () => setError(null) };
 }
