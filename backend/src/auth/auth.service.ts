@@ -74,13 +74,13 @@ export class AuthService {
     if (!stored || stored.expires_at < new Date()) {
       // Delete expired record if it exists
       if (stored) {
-        await this.prisma.refreshToken.delete({ where: { id: stored.id } });
+        await this.prisma.refreshToken.deleteMany({ where: { id: stored.id } });
       }
       throw new UnauthorizedException("Refresh token invalid or expired");
     }
 
     // Delete old token before issuing new one (rotation)
-    await this.prisma.refreshToken.delete({ where: { id: stored.id } });
+    await this.prisma.refreshToken.deleteMany({ where: { id: stored.id } });
 
     const { accessToken, refreshToken } = await this.generateTokens(
       stored.user.id,
