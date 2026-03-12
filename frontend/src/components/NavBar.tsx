@@ -15,10 +15,10 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { DARK_GREEN } from "../styles/tokens";
 
 const AUTH_NAV_ITEMS = [
-  { label: "Home", route: "/" },
   { label: "Recipes", route: "/recipes" },
   { label: "Groups", route: "/groups" },
   { label: "Shopping List", route: "/shopping-list" },
@@ -33,13 +33,23 @@ export default function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-  const { isAuthenticated } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const navItems = isAuthenticated ? AUTH_NAV_ITEMS : GUEST_NAV_ITEMS;
+  async function handleLogout() {
+    await logout();
+    navigate("/login");
+  }
+
+  const navItems = user ? AUTH_NAV_ITEMS : GUEST_NAV_ITEMS;
 
   return (
     <>
-      <AppBar position="sticky" elevation={1} sx={{ backgroundColor: WARM_WHITE }}>
+      <AppBar
+        position="sticky"
+        elevation={1}
+        sx={{ backgroundColor: WARM_WHITE }}
+      >
         <Toolbar disableGutters sx={{ justifyContent: "space-between", px: 2 }}>
           {/* Logo */}
           <Box
@@ -87,6 +97,19 @@ export default function NavBar() {
                   {label}
                 </Button>
               ))}
+              {user && (
+                <Button
+                  onClick={handleLogout}
+                  sx={{
+                    color: DARK_GREEN,
+                    textTransform: "none",
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  Logout
+                </Button>
+              )}
             </Box>
           ) : (
             <IconButton
@@ -101,7 +124,11 @@ export default function NavBar() {
       </AppBar>
 
       {/* Mobile drawer */}
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
         <List sx={{ width: 240, pt: 2 }}>
           {navItems.map(({ label, route }) => (
             <ListItemButton
@@ -124,6 +151,14 @@ export default function NavBar() {
               />
             </ListItemButton>
           ))}
+          {user && (
+            <ListItemButton
+              onClick={() => { setDrawerOpen(false); handleLogout(); }}
+              sx={{ color: DARK_GREEN }}
+            >
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          )}
         </List>
       </Drawer>
     </>

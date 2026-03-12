@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { registerUser } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
+import api from "../api/axiosInstance";
 
 export function useRegister() {
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,8 +17,8 @@ export function useRegister() {
     setIsLoading(true);
     setError(null);
     try {
-      const { user } = await registerUser(data);
-      setUser(user);
+      await api.post("/user/register", data);
+      await login(data.email, data.password);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Registration failed");
     } finally {
@@ -26,5 +26,5 @@ export function useRegister() {
     }
   }
 
-  return { register, isLoading, error };
+  return { register, isLoading, error, clearError: () => setError(null) };
 }

@@ -1,76 +1,76 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs'
-import { CreateUserDto } from '../dto/create-user.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from "@nestjs/common";
+import * as bcrypt from "bcryptjs";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class UserService {
-    async passwordValidation(password:string) {
-        // Password Pattern: lowercase, UPPERCASE, digit, min length 8
-        const passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
-        return passPattern.test(password);
-    }
+  async passwordValidation(password: string) {
+    // Password Pattern: lowercase, UPPERCASE, digit, min length 8
+    const passPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+    return passPattern.test(password);
+  }
 
-    async hashPassword(password:string) {
-        // Salt password 10 times and return hash result
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-        return await bcrypt.hash(password, salt);
-    }
+  async hashPassword(password: string) {
+    // Salt password 10 times and return hash result
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    return await bcrypt.hash(password, salt);
+  }
 
-    async verifyPassword(password:string, hash:string) {
-        // Compare password with hashed password, return true/false
-        return await bcrypt.compare(password, hash);
-    }
+  async verifyPassword(password: string, hash: string) {
+    // Compare password with hashed password, return true/false
+    return await bcrypt.compare(password, hash);
+  }
 
-    async validateEmail(email:string) {
-        const emailPattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
-        return emailPattern.test(email)
-    }
-    
-    // stuff from db imp plan
+  // stuff from db imp plan
 
-    constructor(private readonly prisma: PrismaService) {}
-    
-    async findByUsername(username: string) {
-        return this.prisma.user.findUnique({ where: { username } });
-    }
+  constructor(private readonly prisma: PrismaService) {}
 
-    async findById(id: string) {
-        return this.prisma.user.findUnique({ where: { id } });
-    }
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({ where: { username } });
+  }
 
-    async findByEmail(email: string) {
-        return this.prisma.user.findUnique({ where: { email } });
-    }
+  async findById(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
 
-    async registerUser(dto: CreateUserDto) {
-    // 1. Check email uniqueness
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+
+  async registerUser(dto: CreateUserDto) {
+    // Check email uniqueness
     const emailTaken = await this.findByEmail(dto.email);
-    if (emailTaken) throw new ConflictException('Email already in use');
+    if (emailTaken) throw new ConflictException("Email already in use");
 
-    // 2. Check username uniqueness
+    // Check username uniqueness
     const usernameTaken = await this.findByUsername(dto.username);
-    if (usernameTaken) throw new ConflictException('Username already taken');
+    if (usernameTaken) throw new ConflictException("Username already taken");
 
-    // 3. Validate password shape
+    // Validate password shape
     const validPassword = this.passwordValidation(dto.password);
-    if (!validPassword) throw new BadRequestException('Password does not meet requirements');
+    if (!validPassword)
+      throw new BadRequestException("Password does not meet requirements");
 
-    // 4. Hash password
+    // Hash password
     const password_hash = await this.hashPassword(dto.password);
 
-    // 5. Create user in DB
+    // Create user in DB
     const user = await this.prisma.user.create({
-        data: {
-            first_name: dto.firstName,
-            last_name: dto.lastName,
-            username: dto.username,
-            email: dto.email,
-            password_hash,
-        },
+      data: {
+        first_name: dto.firstName,
+        last_name: dto.lastName,
+        username: dto.username,
+        email: dto.email,
+        password_hash,
+      },
     });
 
     return user;
-    }
+  }
 }

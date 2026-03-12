@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { useRegister } from "../hooks/useRegister";
 import { useLogin } from "../hooks/useLogin";
@@ -18,6 +19,7 @@ interface AuthPageProps {
 }
 
 export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>(defaultMode);
   const [warning, setWarning] = useState<string | null>(null);
   const [formState, dispatch] = useReducer(
@@ -29,12 +31,13 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
     register,
     isLoading: registerLoading,
     error: registerError,
+    clearError: clearRegisterError,
   } = useRegister();
-  const { login, isLoading: loginLoading, error: loginError } = useLogin();
+  const { login, isLoading: loginLoading, error: loginError, clearError: clearLoginError } = useLogin();
   const { loginWithGoogle, isLoading: googleLoading } = useGoogleLogin();
 
   const isLoading = registerLoading || loginLoading || googleLoading;
-  const error = registerError ?? loginError;
+  let error = registerError ?? loginError;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,6 +50,7 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
       }
       setWarning(null);
       await register({ firstName, lastName, username, email, password });
+      if (!registerError) navigate("/");
     } else {
       const { email, password } = formState;
       if (!email || !password) {
@@ -55,8 +59,8 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
       }
       setWarning(null);
       await login({ email, password });
+      if (!loginError) navigate("/");
     }
-    // TODO: navigate to "/" on success once auth backend is live
   }
 
   async function handleGoogleLogin() {
@@ -67,6 +71,8 @@ export default function AuthPage({ defaultMode = "signup" }: AuthPageProps) {
   function toggleMode() {
     setMode((prev) => (prev === "signup" ? "login" : "signup"));
     setWarning(null);
+    clearRegisterError();
+    clearLoginError();
     dispatch({ type: "formReset" });
     window.scrollTo({ top: 0, behavior: "instant" });
   }
